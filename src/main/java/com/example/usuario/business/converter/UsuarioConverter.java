@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class UsuarioConverter {
@@ -41,6 +42,7 @@ public class UsuarioConverter {
     // Converte um EnderecoDTO para a entidade Endereco
     public Endereco paraEndereco(EnderecoDTO enderecoDTO) {
         return Endereco.builder()                                // Inicia o Builder de Endereco
+                .id(enderecoDTO.getId())
                 .rua(enderecoDTO.getRua())                       // Mapeia rua
                 .numero(enderecoDTO.getNumero())                 // Mapeia número
                 .cidade(enderecoDTO.getCidade())                 // Mapeia cidade
@@ -62,6 +64,7 @@ public class UsuarioConverter {
     // Converte um TelefoneDTO para a entidade Telefone
     public Telefone paraTelefone(TelefoneDTO telefoneDTO) {
         return Telefone.builder()                                 // Inicia o Builder de Telefone
+                .id(telefoneDTO.getId())
                 .ddd(telefoneDTO.getDdd())                        // Mapeia DDD
                 .numero(telefoneDTO.getNumero())                  // Mapeia número
                 .build();                                         // Finaliza Telefone
@@ -95,6 +98,7 @@ public class UsuarioConverter {
     // Converte um Endereco (entidade) para EnderecoDTO
     public EnderecoDTO paraEnderecoDTO(Endereco endereco) {
         return EnderecoDTO.builder()                               // Inicia o Builder do DTO
+                .id(endereco.getId())
                 .rua(endereco.getRua())                            // Mapeia rua
                 .numero(endereco.getNumero())                      // Mapeia número
                 .cidade(endereco.getCidade())                      // Mapeia cidade
@@ -116,11 +120,12 @@ public class UsuarioConverter {
     // Converte um Telefone (entidade) para TelefoneDTO
     public TelefoneDTO paraTelefoneDTO(Telefone telefone) {
         return TelefoneDTO.builder()                               // Inicia o Builder do DTO
+                .id(telefone.getId())
                 .ddd(telefone.getDdd())                            // Mapeia DDD
                 .numero(telefone.getNumero())                      // Mapeia número
                 .build();                                          // Finaliza o DTO
     }
-}
+
 
 /*
 📌 Resumo do fluxo (IDA e VOLTA):
@@ -141,3 +146,81 @@ VOLTA (Entidade -> DTO):
    e Entidades (camada de domínio/persistência), delegando as conversões de listas
    para métodos auxiliares que convertem item a item.
 */
+
+    /// ============================================================
+    /// ================== tratamente para atualização dos dados do usuario
+    /// ============================================================
+    public Usuario updateUsuario(UsuarioDTO usuarioDTO, Usuario entity) {
+
+            entity.setNome(Optional.ofNullable(usuarioDTO.getNome())
+                    .orElse(entity.getNome()));
+
+            entity.setSenha(Optional.ofNullable(usuarioDTO.getSenha())
+                    .orElse(entity.getSenha()));
+
+            entity.setEmail(Optional.ofNullable(usuarioDTO.getEmail())
+                    .orElse(entity.getEmail()));
+
+            // Mantém sempre o que já existe no banco:
+            entity.setEnderecos(entity.getEnderecos());
+            entity.setTelefone(entity.getTelefone());
+
+            return entity;
+        }
+    ///  =========================   FIM   ==========================
+
+    /// ============================================================
+    /// ================== ATUALIZA DADOS DO ENDERECO ==============
+    /// ========================   INICIO       ====================
+    public Endereco updateEndereco(EnderecoDTO dto, Endereco entityEndereco) {
+
+        entityEndereco.setRua(Optional.ofNullable(dto.getRua())
+                .orElse(entityEndereco.getRua()));
+
+        entityEndereco.setNumero(Optional.ofNullable(dto.getNumero())
+                .orElse(entityEndereco.getNumero()));
+
+        entityEndereco.setComplemento(Optional.ofNullable(dto.getComplemento())
+                .orElse(entityEndereco.getComplemento()));
+
+        entityEndereco.setCidade(Optional.ofNullable(dto.getCidade())
+                .orElse(entityEndereco.getCidade()));
+
+        entityEndereco.setEstado(Optional.ofNullable(dto.getEstado())
+                .orElse(entityEndereco.getEstado()));
+
+        entityEndereco.setCep(Optional.ofNullable(dto.getCep())
+                .orElse(entityEndereco.getCep()));
+
+        return entityEndereco;
+    }
+    ///  =========================   FIM   ==========================
+
+    /// ============================================================
+    /// ================== ATUALIZA DADOS DO TELEFONE ==============
+    /// ========================   INICIO       ====================
+    public Telefone updateTelefone(TelefoneDTO dto, Telefone entityTelefone) {
+        entityTelefone.setNumero(Optional.ofNullable(dto.getNumero())
+                .orElse(entityTelefone.getNumero()));
+
+        entityTelefone.setDdd(Optional.ofNullable(dto.getDdd())
+                .orElse(entityTelefone.getDdd()));
+
+        return entityTelefone;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

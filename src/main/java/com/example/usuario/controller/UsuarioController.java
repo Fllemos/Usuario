@@ -1,9 +1,10 @@
 package com.example.usuario.controller;
 
 
+import com.example.usuario.business.Dto.EnderecoDTO;
+import com.example.usuario.business.Dto.TelefoneDTO;
 import com.example.usuario.business.Dto.UsuarioDTO;
 import com.example.usuario.business.UsuarioService;
-import com.example.usuario.infrastructure.entity.Usuario;
 import com.example.usuario.infrastructure.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -39,7 +40,7 @@ public class UsuarioController {
 
 
     @GetMapping
-    public ResponseEntity<Usuario> buscaUsuarioPorEmail(@RequestParam("email") String email){
+    public ResponseEntity<UsuarioDTO> buscaUsuarioPorEmail(@RequestParam("email") String email){
         return  ResponseEntity.ok(usuarioService.buscarUsuarioPorEmail(email));
 
     }
@@ -49,6 +50,44 @@ public class UsuarioController {
         usuarioService.deletaUsuarioPorEmail(email);
         return ResponseEntity.ok().build();
     }
+
+    /// ============================================================
+    /// ================== ATUALIZA DADOS DO USUARIO================
+    /// ========================   INICIO       ====================
+    @PutMapping
+    public ResponseEntity<UsuarioDTO> atualizarDadosUsuario(@RequestBody   UsuarioDTO dto,
+                                                            @RequestHeader("Authorization") String token){
+    return ResponseEntity.ok(usuarioService.atualizarDadosUsuario(token, dto));
+    }
+    ///  =========================   FIM   ==========================
+
+    /// ============================================================
+    /// ================== ATUALIZA DADOS DE ENDERECO===============
+    /// ========================   INICIO       ====================
+    @PutMapping("/Endereco")
+    public ResponseEntity<EnderecoDTO> atualizarDadosUsuario(@RequestBody   EnderecoDTO dto,
+                                                             @RequestParam("id") Long id){
+        return ResponseEntity.ok(usuarioService.atualizarEndereco(id, dto));
+    }
+    ///  =========================   FIM   ==========================
+
+    /// ============================================================
+    /// ================== ATUALIZA DADOS DE TELEFONE===============
+    /// ========================   INICIO       ====================
+    @PutMapping("/Telefone")
+    public ResponseEntity<TelefoneDTO> atualizarTelefone(@RequestBody   TelefoneDTO dto,
+                                                         @RequestParam("id") Long id){
+        return ResponseEntity.ok(usuarioService.atualizarTelefone(id, dto));
+    }
+    ///  =========================   FIM   ==========================
+
+
+
+
+
+
+
+
 
 
 
