@@ -208,6 +208,49 @@ VOLTA (Entidade -> DTO):
 
         return entityTelefone;
     }
+
+
+    // Converte um EnderecoDTO para Endereco
+    public Endereco paraEnderecoEntity(EnderecoDTO dto, Long idUsuario) {
+        return Endereco.builder()
+                .id(dto.getId())
+                .rua(dto.getRua())
+                .numero(dto.getNumero())
+                .cidade(dto.getCidade())
+                .complemento(dto.getComplemento())
+                .cep(dto.getCep())
+                .estado(dto.getEstado())
+                .usuario_id(idUsuario)
+                .build();
+    }
+
+
+    public Telefone paraTelefoneEntity(TelefoneDTO dto, Long idUsuario) {
+        return Telefone.builder()
+                .id(dto.getId())
+                .ddd(dto.getDdd())
+                .numero(dto.getNumero())
+                .usuario_id(idUsuario)
+                .build();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
 
 
