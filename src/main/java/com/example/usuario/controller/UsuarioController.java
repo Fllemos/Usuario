@@ -72,6 +72,32 @@ public class UsuarioController {
     ///  =========================   FIM   ==========================
 
     /// ============================================================
+    /// ================== INSERIR DADOS DE ENDERECO ===============
+    /// ========================   INICIO       ====================
+    @PostMapping("/Novo/Endereco")
+    public ResponseEntity<EnderecoDTO> salvaNovoEndereco(@RequestBody   EnderecoDTO dto,
+                                                         @RequestHeader("Authorization") String token){
+        return ResponseEntity.ok(usuarioService.salvaNovoEndereco(token, dto));
+    }
+    ///  =========================   FIM   ==========================
+
+
+
+
+
+
+    /// ============================================================
+    /// ================== INSERIR NOVO TELEFONE ===================
+    /// ========================   INICIO       ====================
+    @PostMapping("/Novo/Telefone")
+    public ResponseEntity<TelefoneDTO> salvaNovoTelefone(@RequestBody   TelefoneDTO dto,
+                                                         @RequestHeader("Authorization") String token){
+        return ResponseEntity.ok(usuarioService.salvaNovoTelefone(token, dto));
+    }
+
+
+
+    /// ============================================================
     /// ================== ATUALIZA DADOS DE TELEFONE===============
     /// ========================   INICIO       ====================
     @PutMapping("/Telefone")
