@@ -1,0 +1,120 @@
+package com.example.usuario.controller;
+
+
+import com.example.usuario.business.Dto.EnderecoDTO;
+import com.example.usuario.business.Dto.TelefoneDTO;
+import com.example.usuario.business.Dto.UsuarioDTO;
+import com.example.usuario.business.UsuarioService;
+import com.example.usuario.infrastructure.security.JwtUtil;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/usuario")
+@RequiredArgsConstructor
+public class UsuarioController {
+
+    private final UsuarioService    usuarioService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
+
+
+    @PostMapping
+    public ResponseEntity<UsuarioDTO> salvaUsuario(@RequestBody UsuarioDTO usuarioDTO){
+        return ResponseEntity.ok(usuarioService.salvaUsuario(usuarioDTO));
+    }
+
+    // VALIDAÇÃO VIA TOKE -- PASSANDO USUARIO(EMAIL) E SENHA
+    @PostMapping("/login")
+    public String login(@RequestBody UsuarioDTO usuarioDTO){
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(usuarioDTO.getEmail(),
+                        usuarioDTO.getSenha())
+        );
+        return "Bearer " + jwtUtil.generateToken(authentication.getName());
+    }
+
+
+    @GetMapping
+    public ResponseEntity<UsuarioDTO> buscaUsuarioPorEmail(@RequestParam("email") String email){
+        return  ResponseEntity.ok(usuarioService.buscarUsuarioPorEmail(email));
+
+    }
+
+    @DeleteMapping("/{email}")
+    public ResponseEntity<Void> deletaporEmail(@PathVariable String email){
+        usuarioService.deletaUsuarioPorEmail(email);
+        return ResponseEntity.ok().build();
+    }
+
+    /// ============================================================
+    /// ================== ATUALIZA DADOS DO USUARIO================
+    /// ========================   INICIO       ====================
+    @PutMapping
+    public ResponseEntity<UsuarioDTO> atualizarDadosUsuario(@RequestBody   UsuarioDTO dto,
+                                                            @RequestHeader("Authorization") String token){
+    return ResponseEntity.ok(usuarioService.atualizarDadosUsuario(token, dto));
+    }
+    ///  =========================   FIM   ==========================
+
+    /// ============================================================
+    /// ================== ATUALIZA DADOS DE ENDERECO===============
+    /// ========================   INICIO       ====================
+    @PutMapping("/Endereco")
+    public ResponseEntity<EnderecoDTO> atualizarDadosUsuario(@RequestBody   EnderecoDTO dto,
+                                                             @RequestParam("id") Long id){
+        return ResponseEntity.ok(usuarioService.atualizarEndereco(id, dto));
+    }
+    ///  =========================   FIM   ==========================
+
+    /// ============================================================
+    /// ================== INSERIR DADOS DE ENDERECO ===============
+    /// ========================   INICIO       ====================
+    @PostMapping("/Novo/Endereco")
+    public ResponseEntity<EnderecoDTO> salvaNovoEndereco(@RequestBody   EnderecoDTO dto,
+                                                         @RequestHeader("Authorization") String token){
+        return ResponseEntity.ok(usuarioService.salvaNovoEndereco(token, dto));
+    }
+    ///  =========================   FIM   ==========================
+
+
+
+
+
+
+    /// ============================================================
+    /// ================== INSERIR NOVO TELEFONE ===================
+    /// ========================   INICIO       ====================
+    @PostMapping("/Novo/Telefone")
+    public ResponseEntity<TelefoneDTO> salvaNovoTelefone(@RequestBody   TelefoneDTO dto,
+                                                         @RequestHeader("Authorization") String token){
+        return ResponseEntity.ok(usuarioService.salvaNovoTelefone(token, dto));
+    }
+
+
+
+    /// ============================================================
+    /// ================== ATUALIZA DADOS DE TELEFONE===============
+    /// ========================   INICIO       ====================
+    @PutMapping("/Telefone")
+    public ResponseEntity<TelefoneDTO> atualizarTelefone(@RequestBody   TelefoneDTO dto,
+                                                         @RequestParam("id") Long id){
+        return ResponseEntity.ok(usuarioService.atualizarTelefone(id, dto));
+    }
+    ///  =========================   FIM   ==========================
+
+
+
+
+
+
+
+
+
+
+
+}
